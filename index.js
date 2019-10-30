@@ -29,7 +29,7 @@ server.get("/api/users", (req, res) => {
 });
 
 //POST request to "api/users"
-server.post("users", (req,res)=> {
+server.post("/api/users", (req,res)=> {
     const userInfo = req.body;
     if(!userInfo.name || !userInfo.bio) {
         res.status(400).json({errorMessage:"Please provide name and bio for the user"})
@@ -45,17 +45,18 @@ server.post("users", (req,res)=> {
 })
 
 //DELETE request to "api/users/:id"
-server.delete("api/users/:id", (req,res) => {
+server.delete("/api/users/:id", (req,res) => {
     const {id} = req.params
     db.remove(id)
     .then(deletedUser => {
         if(deletedUser) {
             res.status(204).end()
         } else {
-            res.status(404).json({message:"Th e user with the specified Id does not exist"})
+            res.status(404).json({message:"The user with the specified Id does not exist"})
         }
     })
     .catch(err => {
         res.status(500).json({error:"The user could not be removed"})
     })
 })
+
