@@ -9,18 +9,37 @@ server.listen(port, () => {
     console.log(`**Server listening on port ${port}***`);
 })
 
+//middleware
 server.use(express.json());
 
+//GET request to "/"
 server.get("/", (req, res) => {
     res.send("Hello from index.js inside Node-API1-Project");
 })
 
-server.get('/users', (req, res) => {
+//GET request to "api/users"
+server.get("/api/users", (req, res) => {
     db.find()
         .then(users => {
             res.status(200).json(users);
         })
         .catch(err => {
-            res.status(500).json({ success: false, err });
+            res.status(500).json ({ message: "error: The users information could not be retrieved." });
         });
 });
+
+//POST request to "api/users"
+server.post("users", (req,res)=> {
+    const userInfo = req.body;
+    if(!userInfo.name || !userInfo.bio) {
+        res.status(400).json({errorMessage:"Please provide name and bio for the user"})
+    } else {
+        db.insert(userInfo)
+        .then(user => {
+            res.status(201).json(user)
+        })
+        .catch(err => {
+            res.status(500).json({error: "There was an error while saving the user to the database"})
+        })
+    }
+})
