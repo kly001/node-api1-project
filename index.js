@@ -3,10 +3,10 @@ const express = require("express");
 
 const server = express();
 
-const port = 4321;
+const PORT = process.env.PORT ||4321;
 
-server.listen(port, () => {
-    console.log(`**Server listening on port ${port}***`);
+server.listen(PORT, () => {
+    console.log(`**Server listening on port ${PORT}***`);
 })
 
 //middleware
@@ -27,6 +27,7 @@ server.get("/api/users", (req, res) => {
             res.status(500).json ({ message: "error: The users information could not be retrieved." });
         });
 });
+
 
 //Create a user: POST request to "api/users"
 server.post("/api/users", (req,res)=> {
@@ -81,3 +82,8 @@ server.put("/api/users/:id", (req,res) => {
         })
     }
 })
+
+//Return a specific user: GET request to "api/users/:id"
+server.get("/api/users/:id", (req, res) => {
+    
+});
