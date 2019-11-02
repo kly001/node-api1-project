@@ -29,15 +29,18 @@ server.get("/api/users", (req, res) => {
 });
 
 
-//Create a user: POST request to "api/users"
+//Create a user: user request to "api/users"
 server.post("/api/users", (req,res)=> {
     const userInfo = req.body;
     if(!userInfo.name || !userInfo.bio) {
         res.status(400).json({errorMessage:"Please provide name and bio for the user"})
     } else {
         db.insert(userInfo)
-        .then(user => {
-            res.status(201).json(user)
+        .then(({id}) => {
+            db.findById(id)
+            .then(user => {
+             res.status(201).json(user)
+            })
         })
         .catch(err => {
             res.status(500).json({error: "There was an error while saving the user to the database"})
@@ -83,7 +86,18 @@ server.put("/api/users/:id", (req,res) => {
     }
 })
 
-//Return a specific user: GET request to "api/users/:id"
-server.get("/api/users/:id", (req, res) => {
-    
-});
+
+//Return a specific users: GET request to "api/users/:id"
+server.get("/api/users/:id",(req,res) => {
+    db.findById(req.params.id)
+     .then(user => {
+         if(user) {
+             res.status(200).json(user)
+         } else {
+             res.status(404).json({message:"The user with the specified ID does not exist"})
+         }
+     })
+     .catch(err => {
+         res.status(500).json({message: "The user information could not be retrieved."})
+     })
+ })
